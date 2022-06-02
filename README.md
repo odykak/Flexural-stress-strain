@@ -5,6 +5,6 @@ Reads force - displacement data and, in a new folder, plots:
 - bar charts for each sample and material
 - saves the different data files in different sheets within an Excel file
 
-"Stress-strain" is the file to run. The rest of the files starting with a number are data.
+"Stress-strain" is the file to run. All data can be found in the branch named "Data".
 
 Make sure to adjust the paths in the code.
