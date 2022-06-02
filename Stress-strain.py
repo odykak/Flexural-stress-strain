@@ -66,7 +66,7 @@ if not os.path.exists(mesa):
     os.makedirs(mesa)
 
 #Path to data. Full path if in different folder than this script is. Otherwise *files common name part*".
-file_list = [i for i in glob.glob(r"C:/Users/KO/OneDrive - University of Patras/Επιφάνεια εργασίας/PLA uncut data/*")]
+file_list = [i for i in glob.glob(r"PLA uncut data/*")]
 #Sort in order of number appearing in front. Omit or adjust accordingly in case of different naming.
 file_list=natsorted(file_list)
 
@@ -74,7 +74,7 @@ file_list=natsorted(file_list)
 data = [pd.read_csv(file,names=["Displacement","Force",'Time'],skiprows=270, delimiter=' ') for file in file_list]
 
 #Replaces the useless part of the dataframes' names to auto-generate a better suited legend.
-file_list=[file.replace("C:/Users/KO/OneDrive - University of Patras/Επιφάνεια εργασίας/PLA uncut data\\", '') for file in file_list]
+file_list=[file.replace("PLA uncut data\\", '') for file in file_list]
 file_list=[file.replace('.dat','') for file in file_list]
 file_list=[file.replace('s','#') for file in file_list]
 
@@ -213,13 +213,13 @@ width=[11.8633324,11.88666573,11.73333239,11.92666573,11.97666574,11.92666573,11
 L=40.28 #span length in mm
 
 #Path to data
-file_list = [i for i in glob.glob(r"C:/Users/KO/OneDrive - University of Patras/Επιφάνεια εργασίας/PLA uncut data\*")] 
+file_list = [i for i in glob.glob(r"PLA uncut data\*")] 
 
 # Loading all the csv files to create a list of data frames
 data = [pd.read_csv(file,names=["Displacement","Force",'Time'],skiprows=270, delimiter=' ') for file in file_list]
 
 #New addition to auto-generate the legend
-file_list=[file.replace("C:/Users/KO/OneDrive - University of Patras/Επιφάνεια εργασίας/PLA uncut data\\", '') for file in file_list]
+file_list=[file.replace("PLA uncut data\\", '') for file in file_list]
 file_list=natsorted(file_list)
 
 file_list=[file.replace('.dat','') for file in file_list]
