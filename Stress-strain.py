@@ -5,19 +5,6 @@ Created on Wed Jan  5 20:32:56 2022
 @author: KO
 """
 
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-import seaborn as sns
-import glob
-import os
-from scipy.optimize import curve_fit
-from sklearn.linear_model import LinearRegression
-from io import StringIO
-
-
-
 #%% Stress - strain graph
 import pandas as pd
 import numpy as np
@@ -61,7 +48,7 @@ L=40.28
 cwd=os.getcwd()
 
 #Creates a folder to store the graphs inside the cwd
-mesa= cwd+ '\\CF 80 mm graphs\\'
+mesa= cwd+ '\\Neat PLA\\'
 if not os.path.exists(mesa):
     os.makedirs(mesa)
 
@@ -214,13 +201,14 @@ L=40.28 #span length in mm
 
 #Path to data
 file_list = [i for i in glob.glob(r"PLA uncut data\*")] 
+file_list=natsorted(file_list)
 
 # Loading all the csv files to create a list of data frames
 data = [pd.read_csv(file,names=["Displacement","Force",'Time'],skiprows=270, delimiter=' ') for file in file_list]
 
 #New addition to auto-generate the legend
 file_list=[file.replace("PLA uncut data\\", '') for file in file_list]
-file_list=natsorted(file_list)
+
 
 file_list=[file.replace('.dat','') for file in file_list]
 file_list=[file.replace('s','#') for file in file_list]
@@ -293,103 +281,24 @@ for index, dataframe in enumerate(data):
     
     # Legend
     plt.legend(frameon=False)  # Adds the legend. loc='best',bbox_to_anchor=(1,0.85)
-    
-    
-    # https://realpython.com/linear-regression-in-python/
-    # x_data=data[index]['Strain'].to_numpy().reshape(-1,1)
-    # y_data=data[index]['Stress'].to_numpy()
-
-    # model = LinearRegression()
-    # model.fit(x_data, y_data)
-    
-    # model = LinearRegression().fit(x_data, y_data)
-    # r_sq = model.score(x_data, y_data)
-    # E.append(model.coef_)
-    
-    
+   
     #My linear regression that works. Drawn in the same graph with the linear region of the curve.
     x_data=data[index]['Strain'].to_numpy()
     y_data=data[index]['Stress'].to_numpy()
     
-    #Hard math don't bother.
-    # def model_f(x, a, b):
-    #     return a*x+b
-    
-    # popt, pcov = curve_fit(model_f, x_data, y_data, p0=[2,2])
-    # a_opt,b_opt = popt
-    # x_model = np.linspace(min(x_data), max(x_data), 100)
-    # y_model = model_f(x_model, a_opt,b_opt)
-    
-    # plt.plot(x_model,y_model, color='r',label='Linear regression')
-    # plt.legend(frameon=False)
-    # a_opt=round(a_opt/1000,3)
-    # plt.text(0.012,7,f"E={a_opt} GPa")#   plt.text(0.015,8,'E=%s GPa'%(a_opt)) #alternative # rotation="horizontal", ha="center"
-    # E.append(a_opt)
-    
+   
     #Numpy least squares.
     A = np.vstack([x_data, np.ones(len(x_data))]).T
     m,c=np.linalg.lstsq(A,y_data,rcond=None)[0]
     slope=round(m/1000,3)
     E.append(slope)
     
-    
-    #plt.plot(x_data, y_data, 'o', label='Original data', markersize=10)
     plt.plot(x_data, m*x_data + c, 'r', label='Fitted line')
     plt.legend(frameon=False)
     plt.text(0.012,7,f"E={slope} GPa",va='center',ha='center')
     
     #Saving the fig. Insert in the for loop for different graph
     plt.savefig(mesa+file_list[index]+'.png', dpi=300,bbox_inches="tight")
-
-
-#%% Intuitive stuff. Can definitely be improved
-# import pandas as pd
-# import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib as mpl
-# import seaborn as sns
-# import glob
-# import os
-
-# from scipy.optimize import curve_fit
-# from sklearn.linear_model import LinearRegression
-
-# from io import StringIO
-# from natsort import natsorted
-
-# plt.rcParams.update({'font.size' : 12})
-
-# width = 0.3
-
-# x = np.arange(len(file_list))
-
-# fig, ax1 = plt.subplots(figsize=(10,5))
-# ax2 = ax1.twinx()
-
-# ax1.bar(x, UTS, color='#1f77b4',width=width, align='center',label='Ultimate strength')
-
-# ax2.bar(x+width, E, color='#ff7f0e', width=width,align='center', label='Flexural modulus') 
-
-# ax1.set_xticks(x+width/2,file_list) #POY PANE TA LABELS
-# plt.grid(axis='y',linestyle='dashed', linewidth='0.3', color='grey',alpha=0.8)
-
-# ax1.set_ylabel('Ultimate strength (MPa)')#,color='#1f77b4'
-# ax2.set_ylabel('Flexural modulus (GPa)')#,color='#ff7f0e'
-
-# ax1.legend(loc=(0.7,0.8),frameon=False)
-# ax2.legend(loc=(0.7,0.9),frameon=False)
-
-# ax1.set_xticklabels(file_list,rotation=45)
-
-# #Colours the spines and ticks.
-# # ax1.tick_params(axis='y', labelcolor='#1f77b4',)
-# # ax2.tick_params(axis='y', labelcolor='#ff7f0e')
-# # ax1.tick_params(axis='y',color='#1f77b4')
-# # ax2.tick_params(color='#ff7f0e')
-# # ax2.spines['left'].set_color('#1f77b4')
-# # ax2.spines['right'].set_color('#ff7f0e')
-
-# # plt.savefig(mesa+'#6 comparative bar char allt'+'.png', dpi=300,bbox_inches="tight")
 
 #%% Seperate graphs for each sample and each material
 import pandas as pd
