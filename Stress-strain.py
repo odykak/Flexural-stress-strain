@@ -99,7 +99,7 @@ fig = plt.figure(figsize=(5,5),dpi=300)
 markers=('o', 's', 'v', '^', '<', '>', '8', 'p', '*', 'h', 'H', 'D', 'd', 'P', 'X')
 
 
-# #Plot in the same graph. Can as well locate columns with name but .iloc is useful af. Do as I say, not as I do.
+# #Plot in the same graph. Can as well locate columns with name but .iloc is useful. Do as I say, not as I do.
 for index, dataframe in enumerate(data):
     # fig = plt.figure(figsize=(5,5),dpi=300)
     plt.plot(data[index]['Strain'],data[index]['Stress'],label=file_list[index],linestyle='-', marker=markers[index], mfc='w', markersize=8)
@@ -208,7 +208,7 @@ for dataframe in data:
 
 E=[]#list with all moduli
 
-# #Plot in the same graph. Can as well locate columns with name but .iloc is useful af.
+# #Plot in the same graph. Can as well locate columns with name but .iloc is useful.
 for index, dataframe in enumerate(data):
     fig = plt.figure(figsize=(5,5),dpi=300)
     plt.plot(data[index]['Strain'],data[index]['Stress'],label=file_list[index],linestyle='-', marker=markers[index], mfc='w', markersize=6)
