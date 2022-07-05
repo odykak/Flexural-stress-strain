@@ -1,5 +1,5 @@
-# Stress-strain
-Reads force - displacement data and, in a new folder, plots:
+# Flexuarl Stress-strain
+Reads 3 point bending force - displacement data and, in a new folder, plots:
 - stress - strain curves
 - the elastic region for each sample
 - bar charts for each sample and material properties
