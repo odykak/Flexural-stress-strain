@@ -125,8 +125,12 @@ for dataframe in data:
     max_value = dataframe['Stress'].max()
     UTS.append(max_value)
 
-#Saving the fig. Insert in the for loop for different graph-----------------UNTICK------------------------------------------------------------------------------
-plt.savefig(mesa+'#1 unedited stress strain.png', dpi=300,bbox_inches="tight")
+break_strain=[]
+for dataframe in data:
+    break_strain.append(dataframe['Strain'].max())
+
+#Saving the fig. Insert in the for loop for different graph
+#plt.savefig(mesa+'#1 unedited stress strain.png', dpi=300,bbox_inches="tight")
 
 # Saves the coupons data in excel
 with pd.ExcelWriter('All coupons data.xlsx', engine='xlsxwriter') as writer:
@@ -243,9 +247,8 @@ for index, dataframe in enumerate(data):
     plt.text(0.012,7,f"E={slope} GPa",va='center',ha='center')
     
     #Saving the fig. Insert in the for loop for different graph
-    plt.savefig(mesa+file_list[index]+'.png', dpi=300,bbox_inches="tight")
+    #plt.savefig(mesa+file_list[index]+'.png', dpi=300,bbox_inches="tight")
 
-#%% Seperate graphs for each sample and each material
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -253,64 +256,88 @@ import matplotlib as mpl
 import seaborn as sns
 import glob
 import os
+
 from scipy.optimize import curve_fit
 from sklearn.linear_model import LinearRegression
+
 from io import StringIO
 from natsort import natsorted
+
 from statistics import mean
 import statistics
 from statistics import stdev
 
-
 plt.rcParams['axes.axisbelow'] = True
-
 x = np.arange(len(file_list))
-fig = plt.figure(figsize=(10,5))
-
-#UTS for each coupon
 width=0.5
-plt.bar(x,UTS,color='#1f77b4', width=width,align='center',label='Ultimate strength (MPa')
+
+#US for each coupon
+fig = plt.figure(figsize=(10,5))
+plt.bar(x,US,color='#0C5DA5', width=width, align='center',label='Ultimate strength (MPa)',edgecolor = 'black')
 plt.xticks(x,file_list,rotation=45) #POY PANE TA LABELS
 plt.ylabel('Ultimate Strength (MPa)')
 plt.grid(axis='y',linestyle='dashed', linewidth='0.3', color='grey',alpha=0.8)
-plt.savefig(mesa+'#2 uts all'+'.png', dpi=300,bbox_inches="tight")
+# plt.savefig(mesa+'#2 uts all'+'.png', dpi=300,bbox_inches="tight")
+
+#Strain at break for each coupon
+fig = plt.figure(figsize=(10,5))
+plt.bar(x,break_strain,color='#00B945', width=width, align='center',label='Strain at break',edgecolor = 'black')
+plt.xticks(x,file_list,rotation=45) #POY PANE TA LABELS
+plt.ylabel('Strain at break')
+plt.grid(axis='y',linestyle='dashed', linewidth='0.3', color='grey',alpha=0.8)
+# plt.savefig(mesa+'#2 break strain all'+'.png', dpi=300,bbox_inches="tight")
 
 #E for each coupon
 fig = plt.figure(figsize=(10,5))
-plt.bar(x, E, color='#ff7f0e', width=width,align='center', label='Flexural modulus (GPa')
+plt.bar(x, E, color='#FF9500', width=width,align='center', label='Flexural modulus (GPa)',edgecolor = 'black')
 plt.xticks(x,file_list,rotation=45) #POY PANE TA LABELS
 plt.ylabel('Flexural modulus (GPa)')
 plt.grid(axis='y',linestyle='dashed', linewidth='0.3', color='grey',alpha=0.8)
-plt.savefig(mesa+'#3 E all'+'.png', dpi=300,bbox_inches="tight")
+# plt.savefig(mesa+'#3 E all'+'.png', dpi=300,bbox_inches="tight")
 
 #for each material now. Automata UTS_all=[round(np.average(UTS[0:2]),3)
-UTS_all=[round(mean(UTS[0:3]),3),round(mean(UTS[3:6]),3),round(mean(UTS[6:]),3)]
-UTS_std=[stdev(UTS[0:3])/(3**0.5),stdev(UTS[3:6])/(3**0.5),stdev(UTS[6:])/(4**0.5)]
+US_all=[round(mean(US[0:3]),3),round(mean(US[3:6]),3),round(mean(US[6:]),3)]
+US_std=[stdev(US[0:3])/(3**0.5),stdev(US[3:6])/(3**0.5),stdev(US[6:])/(4**0.5)]
 
+break_strain_all=[round(mean(break_strain[0:3]),3),round(mean(break_strain[3:6]),3),round(mean(break_strain[6:]),3)]
+break_strain_std=[stdev(break_strain[0:3])/(3**0.5),stdev(break_strain[3:6])/(3**0.5),stdev(break_strain[6:])/(4**0.5)]
 
 E_all=[round(mean(E[0:3]),3),round(mean(E[3:6]),3),round(mean(E[6:]),3)]
 E_std = [stdev(E[0:3])/(3**0.5),stdev(E[3:6])/(3**0.5),stdev(E[6:])/(4**0.5)]
+
+
 
 lista=['3D850', '3Devo', 'CR10']
 x = np.arange(len(lista))
 width=0.3
 
-
-#UTS for each material
+#US for each material
 fig = plt.figure(figsize=(8,5))
-plt.bar(x,UTS_all,color='#1f77b4', width=width,align='center',label='Ultimate strength (MPa')
-plt.errorbar(x, UTS_all, yerr=UTS_std, fmt='none', color="black",capsize=6,ecolor='black')
+plt.bar(x,US_all,color='#0C5DA5', width=width,align='center',label='Ultimate strength (MPa)',edgecolor = 'black')
+plt.errorbar(x, US_all, yerr=US_std, fmt='none', color="black",capsize=6,ecolor='black')
 plt.xticks(x,lista,rotation=0) #POY PANE TA LABELS
 plt.ylabel('Ultimate Strength (MPa)')
 plt.grid(axis='y',linestyle='dashed', linewidth='0.3', color='grey',alpha=0.8)
 
 for graph in x:
-    plt.text(x[graph],33.22, f'{UTS_all[graph]}', rotation="horizontal", ha="center")
-plt.savefig(mesa+'#4 UTS per material'+'.png', dpi=300,bbox_inches="tight")
+    plt.text(x[graph],33.22, f'{US_all[graph]}', rotation="horizontal", ha="center")
+# plt.savefig(mesa+'#4 UTS per material'+'.png', dpi=300,bbox_inches="tight")
+
+#Strain at break for each material
+fig = plt.figure(figsize=(8,5))
+plt.bar(x,break_strain_all ,color='#00B945', width=width,align='center',label='Strain at break',edgecolor = 'black')
+plt.errorbar(x, break_strain_all, yerr=break_strain_std, fmt='none', color="black",capsize=6,ecolor='black')
+plt.xticks(x,lista,rotation=0) #POY PANE TA LABELS
+plt.ylabel('Strain at break')
+plt.grid(axis='y',linestyle='dashed', linewidth='0.3', color='grey',alpha=0.8)
+
+for graph in x:
+    plt.text(x[graph],0.025, f'{break_strain_all[graph]}', rotation="horizontal", ha="center")
+# plt.savefig(mesa+'#4 break strain per material'+'.png', dpi=300,bbox_inches="tight")
 
 #E for each material
 fig = plt.figure(figsize=(8,5))
-plt.bar(x, E_all, color='#ff7f0e', width=width,align='center', label='Flexural modulus (GPa')
+plt.bar(x, E_all, color='#FF9500', width=width,align='center', label='Flexural modulus (GPa)',edgecolor = 'black')
 plt.errorbar(x, E_all, yerr=E_std, fmt='none', color="black",capsize=6)
 plt.xticks(x,lista,rotation=0) #POY PANE TA LABELS
 plt.ylabel('Flexural modulus (GPa)')
@@ -318,4 +345,4 @@ plt.grid(axis='y',linestyle='dashed', linewidth='0.3', color='grey',alpha=0.8)
 
 for graph in x:
     plt.text(x[graph],1.205, f'{E_all[graph]}', rotation="horizontal", ha="center")
-plt.savefig(mesa+'#5 E per material'+'.png', dpi=300,bbox_inches="tight")
+# plt.savefig(mesa+'#5 E per material'+'.png', dpi=300,bbox_inches="tight")
