@@ -1,4 +1,4 @@
-# Flexuarl Stress-strain
+# Flexural Stress-strain
 Reads 3 point bending force - displacement data and, in a new folder, plots:
 - stress - strain curves
 - the elastic region for each sample
